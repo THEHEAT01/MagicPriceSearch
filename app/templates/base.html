@@ -5,16 +5,17 @@
 		{% else %}
 		<title>Welcome to Magic</title>
 		{% endif %}
+		<link rel="stylesheet" type"text/css" href="{{ url_for('static', filename="css/style.css") }}">
 	</head>
 	<body>
-		<div>
+		<div class="navbar">
 			Magic: 
-			<a href="{{ url_for('index') }}">Home</a>
-			<a href="{{ url_for('cardsearch') }}">Search</a>
+			<a class="navbarelem" href="{{ url_for('index') }}">Home</a>
+			<a class="navbarelem" href="{{ url_for('cardsearch') }}">Search</a>
 			{% if current_user.is_anonymous %}
-			<a href="{{ url_for('login') }}">Login</a>
+			<a class="navbarelem" href="{{ url_for('login') }}">Login</a>
 			{% else %}
-			<a href="{{ url_for('index') }}">Logout</a>
+			<a class="navbarelem" href="{{ url_for('index') }}">Logout</a>
 			{% endif %}
 		</div>
 		<hr>

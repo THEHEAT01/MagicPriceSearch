@@ -13,7 +13,7 @@ from app.search import Search
 #@login_required
 def index():
     #Get most recent search of each Result.
-    searches = Card.query.all()
+    searches = Card.query.order_by(Card.cardName.asc()).all()
     posts = []
     for search in searches:
         r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
@@ -73,10 +73,11 @@ def cardresults():
     cardName=request.args.get('searchfor')
     siteName=request.args.get('site')
     searches = Card.query.filter_by(cardName=cardName).all()
+    print(searches)
     posts = []
     for search in searches:
         r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
-        print(r)
+        print(r.searchTime)
         priced = r.price
         print(priced)
         sited = Site.query.filter_by(id=r.siteId).first()

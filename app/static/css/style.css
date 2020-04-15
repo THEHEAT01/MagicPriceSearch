@@ -1,0 +1,16 @@
+.navbar{
+	background-color: red;
+}
+.navbarelem{
+	padding: 20px;
+	color: blue;
+}
+table{
+	border: 1px solid black;
+}
+td{
+	padding: 10px;
+	width: 150px;
+
+	border:1px solid black;
+}
