@@ -29,13 +29,14 @@ class Search():
             nameSrc = soup.find_all("a", {"class": "product__name"})
             names = [] 
             for name in nameSrc:
-                names.append(name.text)
+                names.append(name.text[0:len(keyword)])
 
             #Second search(get the versions of the cards and add them to array)
             versionsSRC = soup.find_all("a", {"class": "product__group"})
             versions = []
             for version in versionsSRC: 
-                versions.append(version.text)
+                correct=len(version.text)-7
+                versions.append(version.text[0:correct])
 
             #Third Search(get the cost and add it to array)
             costs = []
@@ -52,14 +53,15 @@ class Search():
             names = []
             for name in nameSrc:
                cardname=name.find_next("a")
-               names.append(cardname.text)
+               names.append(cardname.text[0:len(keyword)])
 
             #Second Search(get version)
             versionsSrc = soup.find_all("div", {"class": "productDetailSet"})
             versions = []
             for version in versionsSrc:
                 ver = version.find_next("a")
-                versions.append(ver.text)
+                correct = len(ver.text) - 4
+                versions.append(ver.text[0:correct])
 
             #Third Search(get price)
             costs = [] 
