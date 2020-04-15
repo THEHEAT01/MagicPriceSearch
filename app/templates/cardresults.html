@@ -1,11 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-	{% if current_user.is_anonymous %}
-	<h1>Hello, Welcome to the Magic Card Price Search!</h1>
-	{% else %}
-	<h1>Welcome Back, {{ current_user.username }}!</h1>
-	{% endif %}
 	{% for post in posts %}
 	<table>
 		<tr valign="top">
@@ -13,7 +8,5 @@
 			<td><p>{{ post.cardSet }}</p></td>
 			<td><p>$ {{ post.price }}</p></td>
 			<td><p>{{ post.site }}</p></td>
-		</tr>
-	</table>
 	{% endfor %}
 {% endblock %}
