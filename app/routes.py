@@ -12,9 +12,10 @@ from app.search import Search
 @app.route('/index')
 #@login_required
 def index():
-    #Get most recent search of each Result.
+    #Sort in alphabetical order
     searches = Card.query.order_by(Card.cardName.asc()).all()
     posts = []
+    #Cycle through each result and get the name, version, most recent price, and site
     for search in searches:
         r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
         priced = r.price
@@ -25,8 +26,10 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #Check if user is already logged in and take them to the home page
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    #Otherwise display the form and accept login information
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -42,13 +45,16 @@ def login():
 
 @app.route('/logout')
 def logout():
+    #Log user out
     logout_user()
     return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    #Check if user is logged in already and send them to home page
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    #Create form to register new usrs for
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
@@ -58,8 +64,10 @@ def register():
         flash('Thank you for registering for Magic Card Price Tracking! You are now ready to start')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 @app.route('/cardsearch', methods=['GET', 'POST'])
 def cardsearch():
+    #Create form to search for cards based on site and card name
     form = CardSearch()
     if form.validate_on_submit():
         siteName = form.siteName.data
@@ -70,11 +78,13 @@ def cardsearch():
 
 @app.route('/cardresults', methods=['GET', 'POST'])
 def cardresults():
+    #Show results with information passed from card search
     cardName=request.args.get('searchfor')
     siteName=request.args.get('site')
     searches = Card.query.filter_by(cardName=cardName).all()
     print(searches)
     posts = []
+    #cylce through the results just generated.
     for search in searches:
         r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
         print(r.searchTime)
