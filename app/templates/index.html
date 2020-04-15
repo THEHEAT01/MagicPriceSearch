@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<h1>Hi, {{ current_user.username }}!</h1>
+	{% if current_user.is_anonymous %}
+	<h1>Hello, Welcome to the Magic Card Price Search!</h1>
+	{% else %}
+	<h1>Welcome Back, {{ current_user.username }}!</h1>
+	{% endif %}
 	{% for post in posts %}
-		{% include '_post.html' %}
+	<table>
+		<tr valign="top">
+			<td><p>{{ post.cardName }}</p></td>
+			<td><p>{{ post.cardSet }}</p></td>
+			<td><p>$ {{ post.price }}</p></td>
+			<td><p>{{ post.site }}</p></td>
 	{% endfor %}
 {% endblock %}

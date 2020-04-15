@@ -28,7 +28,6 @@ class RegistrationForm(FlaskForm):
 
 class CardSearch(FlaskForm):
     cardName = StringField('Card Name', validators=[DataRequired()])
-    cardVersion = StringField('Card Version')
     siteName = SelectField('Site Name', choices=[("TCGPlayer", "TCGPlayer"),("CardKingdom", "CKD")])
     submit = SubmitField('Search')
 

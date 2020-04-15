@@ -52,6 +52,7 @@ class Site(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     siteLink = db.Column(db.String(32), unique=True, index=True)
     siteName = db.Column(db.String(32), unique=True, index=True)
+    results = db.relationship('Results', backref='results', lazy='dynamic')
 
     def __repr__(self):
         return self.siteLink

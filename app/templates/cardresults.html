@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-	{% for result in results %}
-	<div><p>Card Version{{ Results.cardName }}: Card Price- {{ Results. 	
+	{% for post in posts %}
+	<table>
+		<tr valign="top">
+			<td><p>{{ post.cardName }}</p></td>
+			<td><p>{{ post.cardSet }}</p></td>
+			<td><p>$ {{ post.price }}</p></td>
+			<td><p>{{ post.site }}</p></td>
+	{% endfor %}
 {% endblock %}

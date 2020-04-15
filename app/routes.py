@@ -1,6 +1,6 @@
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, CardSearch
-from app.models import User, Results, Card
+from app.models import User, Results, Card, Site
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
@@ -13,9 +13,13 @@ from app.search import Search
 #@login_required
 def index():
     #Get most recent search of each Result.
-    #search = Card.join(Results, Card.c.id == Results.c.cardId)
-    posts = Card.query.all()#order_by(Card.results.timestamp.desc().all())
-    #for result in results:
+    searches = Card.query.all()
+    posts = []
+    for search in searches:
+        r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
+        priced = r.price
+        sited = Site.query.filter_by(id=r.siteId).first()
+        posts.append({'cardName': search.cardName, 'cardSet': search.cardSet , 'price': priced, 'site': sited.siteName})
         
     return render_template('index.html', title='Home',posts=posts)
 
@@ -59,14 +63,26 @@ def cardsearch():
     form = CardSearch()
     if form.validate_on_submit():
         siteName = form.siteName.data
-        cardName = form.cardName.data
+        cardName = form.cardName.data.lower()
         Search.cardsearch(cardName, siteName)
         return redirect(url_for('cardresults', searchfor=cardName, site=siteName))
     return render_template('cardsearch.html', title='Card Search', form=form)
 
 @app.route('/cardresults', methods=['GET', 'POST'])
 def cardresults():
-    cardName = request.args.get('searchFor', None)
-    siteName = request.args.get('site', None)
-    #Search.pullResults(cardName, siteName)
-    return render_template('cardresults.html', title='Card Results')
+    cardName=request.args.get('searchfor')
+    siteName=request.args.get('site')
+    searches = Card.query.filter_by(cardName=cardName).all()
+    posts = []
+    for search in searches:
+        r = Results.query.order_by(Results.searchTime.desc()).filter_by(cardId=search.id).first()
+        print(r)
+        priced = r.price
+        print(priced)
+        sited = Site.query.filter_by(id=r.siteId).first()
+        print(sited.siteName)
+        posts.append({'cardName': search.cardName, 'cardSet': search.cardSet , 'price': priced, 'site': sited.siteName})
+        print(search.cardName)
+        print(search.cardSet)
+
+    return render_template('cardresults.html', title='Card Results', cardName=request.args.get('searchfor'), siteName=request.args.get('site'), posts=posts)
