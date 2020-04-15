@@ -1,6 +1,6 @@
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, CardSearch
-from app.models import User
+from app.models import User, Results, Card
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
@@ -12,7 +12,12 @@ from app.search import Search
 @app.route('/index')
 #@login_required
 def index():
-    return render_template('index.html', title='Home')
+    #Get most recent search of each Result.
+    #search = Card.join(Results, Card.c.id == Results.c.cardId)
+    posts = Card.query.all()#order_by(Card.results.timestamp.desc().all())
+    #for result in results:
+        
+    return render_template('index.html', title='Home',posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -53,5 +58,15 @@ def register():
 def cardsearch():
     form = CardSearch()
     if form.validate_on_submit():
-        Search.cardsearch(form.cardName.data, form.siteName.data)
+        siteName = form.siteName.data
+        cardName = form.cardName.data
+        Search.cardsearch(cardName, siteName)
+        return redirect(url_for('cardresults', searchfor=cardName, site=siteName))
     return render_template('cardsearch.html', title='Card Search', form=form)
+
+@app.route('/cardresults', methods=['GET', 'POST'])
+def cardresults():
+    cardName = request.args.get('searchFor', None)
+    siteName = request.args.get('site', None)
+    #Search.pullResults(cardName, siteName)
+    return render_template('cardresults.html', title='Card Results')

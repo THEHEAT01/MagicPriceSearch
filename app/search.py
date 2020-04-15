@@ -1,5 +1,6 @@
 import requests
 import app
+from app import db
 from app.models import Card, Site, Results
 from bs4 import BeautifulSoup
 from decimal import Decimal
@@ -35,7 +36,8 @@ class Search():
         for div in divs:
             prices = div.find_all("dd")
             for price in prices: 
-                costs.append(price.text)
+                priceSave = price.text
+                costs.append(float(priceSave.replace('$','')))
                 print(price.text)
         
 
@@ -43,3 +45,21 @@ class Search():
     #Will eventually get database.
         for x in range(len(versions)):
             print(versions[x],costs[x])
+            #Check if card entry already exits
+            if(Card.query.filter_by(cardName=keyword).filter_by(cardSet=versions[x]).all() == []):
+                card = Card(cardName=keyword,cardSet=versions[x])
+                db.session.add(card)
+                db.session.commit()
+            c = Card.query.filter_by(cardName=keyword).filter_by(cardSet=versions[x]).first()
+            s = Site.query.filter_by(siteName=site).first()
+            r = Results(price=costs[x],siteId=s.id, cardId=c.id)
+            db.session.add(r)
+            db.session.commit()
+
+
+
+
+            #
+    #Pull results from database
+    #df pullResults(cardName, siteName):
+        
